@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "Subtitle Keyword Search for Youtube",
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "version": "1.0",
+  "description": "Our understanding of an efficient way to skim through YT videos",
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "YT"
+	},
+  "permissions": [
+    "tabs",
+    "webRequest",
+    "<all_urls>"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": [
+        "*://www.youtube.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}
