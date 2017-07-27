@@ -35,34 +35,48 @@
     if (result[time].toUpperCase().includes(query.toUpperCase())){
       console.log("found keyword \""+query+"\" at timeStamp:"+time+", the corresponding sentence is: " + result[time]);
       // inject finding
-      inject(time, result[time]);
+      var li = handleResult(query, time, result[time]);
+      document.getElementById("resultPanel").appendChild(li);
     }
   }
 }
 
-
-function str_pad_left(string,pad,length) {
-    return (new Array(length+1).join(pad)+string).slice(-length);
-}
-
-/* 
- * Inject search result to UI
- * @param {object} dict - results returned by user query, in dictionary format
- * @return {void}
+/*
+ * Handle sentence found in the subtitle, return a list item that is ready to be inserted to results panel.
+ * @param {String} query - user input
+ * @param {String} timeStamp - timeStamp of sentence
+ * @param {String} sentence - sentence itself
+ * @return {Object} listElement - ready-to-use list item
  */
- function inject(timeStamp, sentence){
-  // inject to HTML.
+ function str_pad_left(string,pad,length) {
+  // helper function to pad the string
+  return (new Array(length+1).join(pad)+string).slice(-length);
+}
+function handleResult(query, timeStamp, sentence){
+  var li = document.createElement("li");
+  li.className = "list-group-item";
+  // find query in sentence, highlight it 
+  // a temporary helper function
+  String.prototype.replaceAll = function(strReplace, strWith) {
+    // See http://stackoverflow.com/a/3561711/556609
+    var esc = strReplace.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    var reg = new RegExp(esc, 'ig');
+    return this.replace(reg, strWith);
+  };
+  sentence = sentence.replaceAll(query,"<b style='color:#e74c3c'>"+query+"</b>"); 
+  // format time
   var minutes = Math.floor(timeStamp / 60);
   var seconds = parseInt(timeStamp%60);
   var finalTime = str_pad_left(minutes,'0',2)+':'+str_pad_left(seconds,'0',2);
-  var li = document.createElement("li");
-  li.className = "list-group-item";
+  // put time + sentence together
   li.innerHTML = finalTime + ' ' + sentence;
+  // add event listener for click
   li.addEventListener("click", function(){
     var video = document.getElementsByTagName("video")[0];
-    video.currentTime = parseInt(timeStamp);
+    video.currentTime = Number(timeStamp);
   });
-  document.getElementById("resultPanel").appendChild(li);
+  // return element
+  return li;
 }
 
 /* 
