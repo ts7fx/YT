@@ -5,7 +5,7 @@
     "scripts": ["background.js"]
   },
   "version": "1.0",
-  "description": "Our understanding of an efficient way to skim through YT videos",
+  "description": "An efficient way to skim YT videos",
   "browser_action": {
     "default_popup": "popup.html",
     "default_title": "YT"
