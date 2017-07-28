@@ -50,7 +50,7 @@
  * @param {String} sentence - sentence itself
  * @return {Object} listElement - ready-to-use list item
  */
-function handleResult(query, timeStamp, sentence){
+ function handleResult(query, timeStamp, sentence){
   // temp helper functions
   String.prototype.replaceAll = function(strReplace, strWith) {
     // See http://stackoverflow.com/a/3561711/556609
