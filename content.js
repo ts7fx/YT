@@ -81,7 +81,7 @@ chrome.runtime.onMessage.addListener(
         searchBox.id = "searchBox";
         listGroup.id = "resultPanel";
         listGroup.className = "list-group";
-        searchBox.addEventListener("keyup", function(){// enable instant search
+        searchBox.addEventListener("keyup", function(){ // enable instant search
           listGroup.innerHTML = ''; // clean the result panel for every new search
           if (searchBox.value.length == 0)
             console.log('empty query');
