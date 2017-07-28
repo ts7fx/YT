@@ -77,22 +77,40 @@ chrome.runtime.onMessage.addListener(
         var subObject = new subtitle(crawler.responseText, request.url),
         container = document.getElementById("watch-header"),
         searchBox = document.createElement('input'), 
-        listGroup = document.createElement("div");
+        listGroup = document.createElement("div"),
+        hiddenGrp = document.createElement("div"),
+        collabutt = document.createElement("button");
         searchBox.id = "searchBox";
         listGroup.id = "resultPanel";
-        listGroup.className = "list-group";
+        hiddenGrp.id = "collapsePanel";
+        hiddenGrp.className = "collapse";
+        hiddenGrp.setAttribute("style", "display: none");
+        collabutt.id = "collaButton";
+        collabutt.innerHTML = "...";
         searchBox.addEventListener("keyup", function(){ // enable instant search
-          listGroup.innerHTML = ''; // clean the result panel for every new search
+          listGroup.innerHTML = hiddenGrp.innerHTML = ''; // clean the result panel for every new search
+          var maxEleShown = 5; // limit up to 5 results displayed
           if (searchBox.value.length == 0)
             console.log('empty query');
           else {
             var searchResult = subObject.search(searchBox.value);
-            for (var i in searchResult)
-              listGroup.appendChild(searchResult[i]);
+            for (var i in searchResult){
+              hiddenGrp.setAttribute("style", "display: none");
+              if (i < maxEleShown)
+                listGroup.appendChild(searchResult[i]);
+              else{
+                hiddenGrp.appendChild(searchResult[i]);
+              }
+            }
           }
         });
+        container.insertBefore(hiddenGrp, container.childNodes[0]);
+        container.insertBefore(collabutt, container.childNodes[0]);
         container.insertBefore(listGroup, container.childNodes[0]);
         container.insertBefore(searchBox, container.childNodes[0]);
+        $('#collaButton').click(function(){ // jquery bootStrap
+            $('#collapsePanel').toggle();
+        });
       }
     };
     crawler.open("GET", request.url, true);
