@@ -1,5 +1,5 @@
-// Monitor, Grab & Pass
-var dict = {}; // once sent already, stop sending again?
+/** Monitor, Grab & Pass */
+var dict = {}; // once sent already, stop sending again
 chrome.webRequest.onCompleted.addListener(function monitor(request){
 	// Grab
 	if (request.url.match(/timedtext/g) != null && dict[request.url] == null){
@@ -18,9 +18,7 @@ chrome.webRequest.onCompleted.addListener(function monitor(request){
 				// option 1: pass request
 				// option 2: pass request.url
 			}); 
-
 			});
-
 	}
 },{
 	urls: ["*://www.youtube.com/*"]
