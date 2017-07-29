@@ -70,6 +70,12 @@ class subtitle {
 /** main: whenever a new request is received, new UI & subtitle object are created */
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
+    if (request.message == 'flick button'){
+      document.getElementsByTagName("video")[0].oncanplay = function(){ // when video can be played, it is done loading.
+        $( ".ytp-subtitles-button" ).click(); 
+        setTimeout(function(){$(".ytp-subtitles-button").click();}, 300);
+      };
+    }
     var crawler = new XMLHttpRequest();
     crawler.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {
