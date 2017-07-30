@@ -51,9 +51,9 @@ class subtitle {
       return this.replace(reg, strWith);
     };
     var li = document.createElement("li"),
-        minutes = Math.floor(timeStamp / 60),
-        seconds = parseInt(timeStamp % 60),
-        finalTime = this.str_pad_left(minutes,'0',2)+':'+this.str_pad_left(seconds,'0',2);
+    minutes = Math.floor(timeStamp / 60),
+    seconds = parseInt(timeStamp % 60),
+    finalTime = this.str_pad_left(minutes,'0',2)+':'+this.str_pad_left(seconds,'0',2);
     li.className = "list-group-item";
     sentence = sentence.replaceAll(query,"<b style='color:#e74c3c'>"+query+"</b>"); // find query in sentence, highlight it
     li.innerHTML = finalTime + ' ' + sentence;
@@ -71,54 +71,61 @@ class subtitle {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message == 'flick button'){
-      document.getElementsByTagName("video")[0].oncanplay = function(){ // when video can be played, it is done loading.
+      document.getElementsByTagName("video")[0].oncanplay = function(){
         $( ".ytp-subtitles-button" ).click(); 
-        setTimeout(function(){$(".ytp-subtitles-button").click();}, 500);
       };
     }
-    var crawler = new XMLHttpRequest();
-    crawler.onreadystatechange = function() {
-      if (this.readyState == 4 && this.status == 200) {
-        // create UI & initiate new subtitle 
-        var subObject = new subtitle(crawler.responseText, request.url),
-        container = document.getElementById("watch-header"),
-        searchBox = document.createElement('input'), 
-        listGroup = document.createElement("div"),
-        hiddenGrp = document.createElement("div"),
-        collabutt = document.createElement("button");
-        searchBox.id = "searchBox";
-        listGroup.id = "resultPanel";
-        hiddenGrp.id = "collapsePanel";
-        hiddenGrp.className = "collapse";
-        hiddenGrp.setAttribute("style", "display: none");
-        collabutt.id = "collaButton";
-        collabutt.innerHTML = "...";
-        searchBox.addEventListener("keyup", function(){ // enable instant search
-          listGroup.innerHTML = hiddenGrp.innerHTML = ''; // clean the result panel for every new search
-          var maxEleShown = 5; // limit up to 5 results displayed
-          if (searchBox.value.length == 0)
-            console.log('empty query');
-          else {
-            var searchResult = subObject.search(searchBox.value);
-            for (var i in searchResult){
-              hiddenGrp.setAttribute("style", "display: none");
-              if (i < maxEleShown)
-                listGroup.appendChild(searchResult[i]);
-              else{
-                hiddenGrp.appendChild(searchResult[i]);
+    else if (request.message == 'flick button twice'){
+      $( ".ytp-subtitles-button" ).click();
+    }
+    else{
+      var crawler = new XMLHttpRequest();
+      crawler.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          // create UI & initiate new subtitle 
+          sendResponse({message: "subtitle loaded"});
+          var subObject = new subtitle(crawler.responseText, request.url),
+          container = document.getElementById("watch-header"),
+          searchBox = document.createElement('input'), 
+          listGroup = document.createElement("div"),
+          hiddenGrp = document.createElement("div"),
+          collabutt = document.createElement("button");
+          searchBox.id = "searchBox";
+          listGroup.id = "resultPanel";
+          hiddenGrp.id = "collapsePanel";
+          hiddenGrp.className = "collapse";
+          hiddenGrp.setAttribute("style", "display: none");
+          collabutt.id = "collaButton";
+          collabutt.innerHTML = "...";
+          searchBox.addEventListener("keyup", function(){ // enable instant search
+            listGroup.innerHTML = hiddenGrp.innerHTML = ''; // clean the result panel for every new search
+            var maxEleShown = 5; // limit up to 5 results displayed
+            if (searchBox.value.length == 0)
+              console.log('empty query');
+            else {
+              var searchResult = subObject.search(searchBox.value);
+              for (var i in searchResult){
+                hiddenGrp.setAttribute("style", "display: none");
+                if (i < maxEleShown)
+                  listGroup.appendChild(searchResult[i]);
+                else{
+                  hiddenGrp.appendChild(searchResult[i]);
+                }
               }
             }
-          }
-        });
-        container.insertBefore(hiddenGrp, container.childNodes[0]);
-        container.insertBefore(collabutt, container.childNodes[0]);
-        container.insertBefore(listGroup, container.childNodes[0]);
-        container.insertBefore(searchBox, container.childNodes[0]);
-        $('#collaButton').click(function(){ // jquery bootStrap
+          });
+          container.insertBefore(hiddenGrp, container.childNodes[0]);
+          container.insertBefore(collabutt, container.childNodes[0]);
+          container.insertBefore(listGroup, container.childNodes[0]);
+          container.insertBefore(searchBox, container.childNodes[0]);
+          $('#collaButton').click(function(){ // jquery bootStrap
             $('#collapsePanel').toggle();
-        });
-      }
-    };
-    crawler.open("GET", request.url, true);
-    crawler.send();
+          });
+        }
+      };
+      crawler.open("GET", request.url, true);
+      crawler.send();
+      return true;
+    }
+    
   });
