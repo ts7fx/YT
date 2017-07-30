@@ -73,7 +73,7 @@ chrome.runtime.onMessage.addListener(
     if (request.message == 'flick button'){
       document.getElementsByTagName("video")[0].oncanplay = function(){ // when video can be played, it is done loading.
         $( ".ytp-subtitles-button" ).click(); 
-        setTimeout(function(){$(".ytp-subtitles-button").click();}, 300);
+        setTimeout(function(){$(".ytp-subtitles-button").click();}, 500);
       };
     }
     var crawler = new XMLHttpRequest();

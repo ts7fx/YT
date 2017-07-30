@@ -3,7 +3,6 @@ var dict = {}; // once sent already, stop sending again
 chrome.webRequest.onCompleted.addListener(function monitor(request){
 	// Grab
 	if (request.url.match(/timedtext/g) != null && dict[request.url] == null){
-		alert(request.url);
 		dict[request.url] = true;
 		// Pass grabbed object to corresponding tab
 		var reg = /v=(.+?)&/;
