@@ -50,11 +50,11 @@ class subtitle {
       var reg = new RegExp(esc, 'ig');
       return this.replace(reg, strWith);
     };
-    var li = document.createElement("li"),
+    var li = document.createElement("p"),
     minutes = Math.floor(timeStamp / 60),
     seconds = parseInt(timeStamp % 60),
     finalTime = this.str_pad_left(minutes,'0',2)+':'+this.str_pad_left(seconds,'0',2);
-    li.className = "list-group-item";
+    //li.className = "list-group-item";
     sentence = sentence.replaceAll(query,"<b style='color:#e74c3c'>"+query+"</b>"); // find query in sentence, highlight it
     li.innerHTML = finalTime + ' ' + sentence;
     li.addEventListener("click", function(){ // add event listener for click
@@ -66,7 +66,55 @@ class subtitle {
     return this.subURL;
   }
 }
+/** create UI */
+function create(text, url){
+  var subObject = new subtitle(text, url),
+  container = document.getElementById("watch-header"),
+  motherbrd = document.createElement("div"),
+  searchBox = document.createElement('input'), 
+  listGroup = document.createElement("div"),
+  hiddenGrp = document.createElement("div"),
+  collabutt = document.createElement("button");
+  searchBox.id = "searchBox";
+  listGroup.id = "resultPanel";
+  listGroup.classList.add("result-panel");
+  hiddenGrp.id = "collapsePanel";
+  hiddenGrp.classList.add("result-panel");
+  hiddenGrp.classList.add("collapse");
+  hiddenGrp.setAttribute("style", "display: none");
 
+  collabutt.id = "collaButton";
+  collabutt.innerHTML = "show more";
+  searchBox.addEventListener("keyup", function(){ // enable instant search
+    listGroup.innerHTML = hiddenGrp.innerHTML = ''; // clean the result panel for every new search
+    var maxEleShown = 5; // limit up to 5 results displayed
+    if (searchBox.value.length == 0)
+      console.log('empty query');
+    else {
+      var searchResult = subObject.search(searchBox.value);
+      for (var i in searchResult){
+        hiddenGrp.setAttribute("style", "display: none");
+        if (i < maxEleShown)
+          listGroup.appendChild(searchResult[i]);
+        else{
+          hiddenGrp.appendChild(searchResult[i]);
+        }
+      }
+    }
+  });
+  motherbrd.appendChild(searchBox);
+  motherbrd.appendChild(listGroup);
+  motherbrd.appendChild(collabutt);
+  motherbrd.appendChild(hiddenGrp);
+  // container.insertBefore(hiddenGrp, container.childNodes[0]);
+  // container.insertBefore(collabutt, container.childNodes[0]);
+  // container.insertBefore(listGroup, container.childNodes[0]);
+  container.insertBefore(motherbrd, container.childNodes[0]);
+  $('#collaButton').click(function(){ // jquery bootStrap
+    $('#collapsePanel').toggle();
+    
+  });
+}
 /** main: whenever a new request is received, new UI & subtitle object are created */
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
@@ -84,43 +132,7 @@ chrome.runtime.onMessage.addListener(
         if (this.readyState == 4 && this.status == 200) {
           // create UI & initiate new subtitle 
           sendResponse({message: "subtitle loaded"});
-          var subObject = new subtitle(crawler.responseText, request.url),
-          container = document.getElementById("watch-header"),
-          searchBox = document.createElement('input'), 
-          listGroup = document.createElement("div"),
-          hiddenGrp = document.createElement("div"),
-          collabutt = document.createElement("button");
-          searchBox.id = "searchBox";
-          listGroup.id = "resultPanel";
-          hiddenGrp.id = "collapsePanel";
-          hiddenGrp.className = "collapse";
-          hiddenGrp.setAttribute("style", "display: none");
-          collabutt.id = "collaButton";
-          collabutt.innerHTML = "...";
-          searchBox.addEventListener("keyup", function(){ // enable instant search
-            listGroup.innerHTML = hiddenGrp.innerHTML = ''; // clean the result panel for every new search
-            var maxEleShown = 5; // limit up to 5 results displayed
-            if (searchBox.value.length == 0)
-              console.log('empty query');
-            else {
-              var searchResult = subObject.search(searchBox.value);
-              for (var i in searchResult){
-                hiddenGrp.setAttribute("style", "display: none");
-                if (i < maxEleShown)
-                  listGroup.appendChild(searchResult[i]);
-                else{
-                  hiddenGrp.appendChild(searchResult[i]);
-                }
-              }
-            }
-          });
-          container.insertBefore(hiddenGrp, container.childNodes[0]);
-          container.insertBefore(collabutt, container.childNodes[0]);
-          container.insertBefore(listGroup, container.childNodes[0]);
-          container.insertBefore(searchBox, container.childNodes[0]);
-          $('#collaButton').click(function(){ // jquery bootStrap
-            $('#collapsePanel').toggle();
-          });
+          create(crawler.responseText, request.url);
         }
       };
       crawler.open("GET", request.url, true);

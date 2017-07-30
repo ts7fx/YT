@@ -1,0 +1,38 @@
+#searchBox{
+	width: 50%;
+    border: 1;
+    display: inline-block;
+    font-size: 16px;
+    height: 100%;
+    margin-bottom: 1em;
+    padding: 2px 6px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+}
+.result-panel{
+    position: inherit;
+    height: 100%;
+    width: 100%;
+    top: -150px;
+    left: 30%;
+    z-index: 100;
+    background-color: #fff;
+    overflow: scroll;
+    
+}
+#collaButton{
+    position: inherit;
+	height: 100%;
+    border: solid 1px transparent;
+    padding: 0 10px;
+    outline: 0;
+    font-weight: 500;
+    font-size: 11px;
+    text-decoration: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    line-height: normal;
+    vertical-align: inherit;
+    cursor: pointer;
+}
