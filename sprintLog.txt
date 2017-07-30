@@ -9,9 +9,8 @@ sprint backlog
 5. Request class, for server side
 6. now doesn't handle special chars. <- a bug
 8. User environment and possible bugs
-7. UI: three boxes containing top words in the subtitle, below these boxes is the searchBox. <- inspired by mobile gmail app quick reply functionality. 
+7. UI: three boxes containing top words in the subtitle, below these boxes is the searchBox.
 9. "under what conditions should this extension be fired up?" <- A/B testing on two versions?
-10. 
 
 done deal
 -------
