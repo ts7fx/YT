@@ -1,11 +1,15 @@
 @ts7fx
 
+current
+-------
+4. 美化 UI
+
 sprint backlog
 -------
 1. smart suggestion to help user to start using this extension by adding three boxes on top of searchbox containing top words in the subtitle
 2. 模糊搜索
 3. what about 用户数据收集？
-4. 美化 UI
+
 5. Request class, for server side
 6. now doesn't handle special chars. <- a bug
 8. User environment and possible bugs
