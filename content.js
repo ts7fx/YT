@@ -50,15 +50,16 @@ class subtitle {
       var reg = new RegExp(esc, 'ig');
       return this.replace(reg, strWith);
     };
-    var li = document.createElement("p"),
+    var li = document.createElement("li"),
     minutes = Math.floor(timeStamp / 60),
     seconds = parseInt(timeStamp % 60),
     finalTime = this.str_pad_left(minutes,'0',2)+':'+this.str_pad_left(seconds,'0',2);
-    //li.className = "list-group-item";
+    li.className = "match-item";
     sentence = sentence.replaceAll(query,"<b style='color:#e74c3c'>"+query+"</b>"); // find query in sentence, highlight it
     li.innerHTML = finalTime + ' ' + sentence;
     li.addEventListener("click", function(){ // add event listener for click
       document.getElementsByTagName("video")[0].currentTime = Number(timeStamp);
+      document.getElementsByTagName("video")[0].oncanplay = function(){};
     });
     return li;
   }     
@@ -66,73 +67,82 @@ class subtitle {
     return this.subURL;
   }
 }
-/** create UI */
-function create(text, url){
-  var subObject = new subtitle(text, url),
-  container = document.getElementById("watch-header"),
-  motherbrd = document.createElement("div"),
-  searchBox = document.createElement('input'), 
-  listGroup = document.createElement("div"),
-  hiddenGrp = document.createElement("div"),
-  collabutt = document.createElement("button");
-  searchBox.id = "searchBox";
-  listGroup.id = "resultPanel";
-  listGroup.classList.add("result-panel");
-  hiddenGrp.id = "collapsePanel";
-  hiddenGrp.classList.add("result-panel");
-  hiddenGrp.classList.add("collapse");
-  hiddenGrp.setAttribute("style", "display: none");
 
-  collabutt.id = "collaButton";
-  collabutt.innerHTML = "show more";
-  searchBox.addEventListener("keyup", function(){ // enable instant search
-    listGroup.innerHTML = hiddenGrp.innerHTML = ''; // clean the result panel for every new search
-    var maxEleShown = 5; // limit up to 5 results displayed
+/** create UI 
+ *  1. create a motherboard to hold everything
+ */
+function create(text, url, callback){
+  var mother = document.createElement("div"),
+      subObject = new subtitle(text, url),
+      container = document.getElementById("watch-header");
+  mother.id = 'mother-board';
+  /** code for suggestion buttons
+      create suggestion buttons
+      var suggestion1 = document.createElement("button");
+      var suggestion2 = document.createElement("button");
+      var suggestion3 = document.createElement("button");
+      suggestion1.classList.add('suggestion-button');
+      suggestion2.classList.add('suggestion-button');
+      suggestion3.classList.add('suggestion-button');
+      suggestion1.innerHTML = suggestion2.innerHTML = suggestion3.innerHTML = 'suggestion';
+      mother.appendChild(suggestion1);
+      mother.appendChild(suggestion2);
+      mother.appendChild(suggestion3);
+  **/
+  // create search box
+  var searchBox = document.createElement("input");
+  searchBox.id = 'search-box';
+  searchBox.setAttribute('placeholder', 'enter keyword ...');
+  var results = document.createElement("ul");
+  results.classList.add('result-panel');
+  results.id = 'my-results';
+  searchBox.addEventListener("keyup", function(){ // instant search
+    results.innerHTML = ''; // clean the result panel for every new search
     if (searchBox.value.length == 0)
-      console.log('empty query');
-    else {
+      $('.result-panel').removeClass('show');
+    else{
       var searchResult = subObject.search(searchBox.value);
-      for (var i in searchResult){
-        hiddenGrp.setAttribute("style", "display: none");
-        if (i < maxEleShown)
-          listGroup.appendChild(searchResult[i]);
-        else{
-          hiddenGrp.appendChild(searchResult[i]);
-        }
-      }
+      if (searchResult.length != 0)
+        $('.result-panel').addClass('show');
+      else if (searchResult.length == 0)
+        $('.result-panel').removeClass('show');
+      for (var i in searchResult)
+        results.appendChild(searchResult[i]);
     }
   });
-  motherbrd.appendChild(searchBox);
-  motherbrd.appendChild(listGroup);
-  motherbrd.appendChild(collabutt);
-  motherbrd.appendChild(hiddenGrp);
-  // container.insertBefore(hiddenGrp, container.childNodes[0]);
-  // container.insertBefore(collabutt, container.childNodes[0]);
-  // container.insertBefore(listGroup, container.childNodes[0]);
-  container.insertBefore(motherbrd, container.childNodes[0]);
-  $('#collaButton').click(function(){ // jquery bootStrap
-    $('#collapsePanel').toggle();
-    
-  });
+  mother.appendChild(searchBox);
+  mother.appendChild(results);
+  container.insertBefore(mother, container.childNodes[0]);
+  $(document).click(function(event) { 
+    if(!$(event.target).closest('#mother-board').length) {
+      $('.result-panel').removeClass('show');
+    }        
+});
 }
 /** main: whenever a new request is received, new UI & subtitle object are created */
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message == 'flick button'){
+      do{
+        console.log('vid still not loaded');
+      }
+      while (document.getElementsByTagName("video")[0] == null);
+
+      //document.getElementsByClassName('ytp-subtitles-button')[0].click();
       document.getElementsByTagName("video")[0].oncanplay = function(){
-        $( ".ytp-subtitles-button" ).click(); 
+          console.log('button flicked onload');
+          document.getElementsByClassName('ytp-subtitles-button')[0].click();
       };
     }
     else if (request.message == 'flick button twice'){
-      $( ".ytp-subtitles-button" ).click();
+      console.log('button restored');
+      document.getElementsByClassName('ytp-subtitles-button')[0].click();
     }
     else{
       var crawler = new XMLHttpRequest();
       crawler.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          // create UI & initiate new subtitle 
-          sendResponse({message: "subtitle loaded"});
-          create(crawler.responseText, request.url);
+          create(crawler.responseText, request.url, sendResponse({message: "subtitle loaded"}));
         }
       };
       crawler.open("GET", request.url, true);
