@@ -30,7 +30,7 @@ li.match-item {
     cursor: pointer; 
 }
 li.match-item:hover { 
-    background-color: gainsboro;
+    background-color: #e5e5e5;
 }
 .result-panel{
     display: none;

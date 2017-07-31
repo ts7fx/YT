@@ -67,32 +67,16 @@ class subtitle {
     return this.subURL;
   }
 }
-
-/** create UI 
- *  1. create a motherboard to hold everything
- */
+/** create UI */
 function create(text, url, callback){
   var mother = document.createElement("div"),
       subObject = new subtitle(text, url),
       container = document.getElementById("watch-header");
   mother.id = 'mother-board';
-  /** code for suggestion buttons
-      create suggestion buttons
-      var suggestion1 = document.createElement("button");
-      var suggestion2 = document.createElement("button");
-      var suggestion3 = document.createElement("button");
-      suggestion1.classList.add('suggestion-button');
-      suggestion2.classList.add('suggestion-button');
-      suggestion3.classList.add('suggestion-button');
-      suggestion1.innerHTML = suggestion2.innerHTML = suggestion3.innerHTML = 'suggestion';
-      mother.appendChild(suggestion1);
-      mother.appendChild(suggestion2);
-      mother.appendChild(suggestion3);
-  **/
   // create search box
   var searchBox = document.createElement("input");
   searchBox.id = 'search-box';
-  searchBox.setAttribute('placeholder', 'enter keyword ...');
+  searchBox.setAttribute('placeholder', 'Search Subtitle');
   var results = document.createElement("ul");
   results.classList.add('result-panel');
   results.id = 'my-results';
@@ -127,8 +111,6 @@ chrome.runtime.onMessage.addListener(
         console.log('vid still not loaded');
       }
       while (document.getElementsByTagName("video")[0] == null);
-
-      //document.getElementsByClassName('ytp-subtitles-button')[0].click();
       document.getElementsByTagName("video")[0].oncanplay = function(){
           console.log('button flicked onload');
           document.getElementsByClassName('ytp-subtitles-button')[0].click();
@@ -149,5 +131,4 @@ chrome.runtime.onMessage.addListener(
       crawler.send();
       return true;
     }
-    
   });
