@@ -33,7 +33,7 @@ class subtitle {
       var rating = 0; 
       for (var i in queries){
         var qLowCase = query.toLowerCase();
-        if (curr.toLowerCase().indexOf(qLowCase)!=-1 && qLowCase.length>1)
+        if (curr.toLowerCase().indexOf(qLowCase)!=-1)
           rating++;
       }
 
