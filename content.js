@@ -26,13 +26,28 @@ class subtitle {
   /** search for query in this.content, returns an array of li objects */
   search(query){
     var result = [];
+    var queries = query.split(' ');
+    var maxRating = 0;
     for (var time in this.content){
       var curr = this.content[time];
-      var qLowCase = query.toLowerCase();
-      if (curr.toLowerCase().indexOf(qLowCase) != -1){
+      var rating = 0; 
+      for (var i in queries){
+        var qLowCase = query.toLowerCase();
+        if (curr.toLowerCase().indexOf(qLowCase)!=-1 && qLowCase.length>1)
+          rating++;
+      }
+
+      if (rating > 0){
+        rating-=(time/10000);
         var beg = curr.toLowerCase().indexOf(qLowCase);
         var ori = curr.substr(beg, qLowCase.length);
-        result.push(this.handleResult(ori, time, curr));
+        if (maxRating < rating){
+          result.unshift(this.handleResult(ori, time, curr));
+          maxRating = rating;
+        }
+        else {
+          result.push(this.handleResult(ori, time, curr));
+        }
       }
     }
     return result; 
