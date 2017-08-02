@@ -122,17 +122,13 @@ function create(text, url, callback){
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message == 'flick button'){
-      do{
-        console.log('vid still not loaded');
-      }
-      while (document.getElementsByTagName("video")[0] == null);
-      document.getElementsByTagName("video")[0].oncanplay = function(){
-          console.log('button flicked onload');
-          document.getElementsByClassName('ytp-subtitles-button')[0].click();
-      };
+      setTimeout(function(){
+        $( document ).ready(function() {
+        document.getElementsByClassName('ytp-subtitles-button')[0].click();
+        });
+      }, 3000); // room for optimization
     }
     else if (request.message == 'flick button twice'){
-      console.log('button restored');
       document.getElementsByClassName('ytp-subtitles-button')[0].click();
     }
     else{
