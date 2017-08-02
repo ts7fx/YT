@@ -82,41 +82,62 @@ class subtitle {
     return this.subURL;
   }
 }
-/** create UI */
-function create(text, url, callback){
-  var mother = document.createElement("div"),
-      subObject = new subtitle(text, url),
-      container = document.getElementById("watch-header");
-  mother.id = 'mother-board';
-  // create search box
-  var searchBox = document.createElement("input");
-  searchBox.id = 'search-box';
-  searchBox.setAttribute('placeholder', 'Search Subtitle');
-  var results = document.createElement("ul");
-  results.classList.add('result-panel');
-  results.id = 'my-results';
-  searchBox.addEventListener("keyup", function(){ // instant search
-    results.innerHTML = ''; // clean the result panel for every new search
-    if (searchBox.value.length == 0)
-      $('.result-panel').removeClass('show');
-    else{
-      var searchResult = subObject.search(searchBox.value);
-      if (searchResult.length != 0)
-        $('.result-panel').addClass('show');
-      else if (searchResult.length == 0)
-        $('.result-panel').removeClass('show');
-      for (var i in searchResult)
-        results.appendChild(searchResult[i]);
+function addMotherBoard(t,l,callback){
+    const m = document.createElement('div'),
+          container = document.getElementById('watch-header');
+    m.id = 'mother-board';
+    container.insertBefore(m, container.childNodes[0]);
+    // callback();
+    
+    if (callback) {
+    callback(t,l);
+}
+  }
+class controlPanel{
+  /** set of static methods to help initializing UI */
+  constructor() {
+  }
+  static addMotherBoard(c,f1,f2){
+    const m = document.createElement('div'),
+          container = document.getElementById('watch-header');
+    m.id = 'mother-board';
+    container.insertBefore(m, container.childNodes[0]);
+    if (f1) {
+      f1(c);
+      f2();
     }
-  });
-  mother.appendChild(searchBox);
-  mother.appendChild(results);
-  container.insertBefore(mother, container.childNodes[0]);
-  $(document).click(function(event) { 
-    if(!$(event.target).closest('#mother-board').length) {
-      $('.result-panel').removeClass('show');
-    }        
-});
+  }
+  static addSearchBox(c){
+    const sb = document.createElement('input'),
+          r = document.createElement("ul");
+    sb.id = 'search-box';
+    r.id = 'my-results';
+    sb.setAttribute('placeholder', 'Search Subtitle');
+    r.classList.add('result-panel');
+    sb.addEventListener('keyup', function(){ // instant search
+      r.innerHTML = ''; // clean the result panel for every new search
+      if (sb.value.length == 0){
+        $('.result-panel').removeClass('show');
+      }
+      else{
+        const sr = c.search(sb.value);
+        if (sr.length != 0)
+          $('.result-panel').addClass('show');
+        else if (sr.length == 0)
+          $('.result-panel').removeClass('show');
+        for (const i in sr)
+          r.appendChild(sr[i]);
+      }
+    });
+    document.getElementById('mother-board').appendChild(sb);
+    document.getElementById('mother-board').appendChild(r);
+  }
+  static addMouseListener(){
+    $(document).click(function(e) { 
+      if(!$(e.target).closest('#mother-board').length) 
+        $('.result-panel').removeClass('show');
+    });
+  }
 }
 /** main: whenever a new request is received, new UI & subtitle object are created */
 chrome.runtime.onMessage.addListener(
@@ -126,7 +147,7 @@ chrome.runtime.onMessage.addListener(
         $( document ).ready(function() {
         document.getElementsByClassName('ytp-subtitles-button')[0].click();
         });
-      }, 3000); // room for optimization
+      }, 1001); // room for optimization
     }
     else if (request.message == 'flick button twice'){
       document.getElementsByClassName('ytp-subtitles-button')[0].click();
@@ -135,7 +156,9 @@ chrome.runtime.onMessage.addListener(
       var crawler = new XMLHttpRequest();
       crawler.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-          create(crawler.responseText, request.url, sendResponse({message: "subtitle loaded"}));
+          const c = new subtitle(crawler.responseText, request.url);
+          controlPanel.addMotherBoard(c, controlPanel.addSearchBox, controlPanel.addMouseListener);
+          sendResponse({message: "subtitle loaded"});
         }
       };
       crawler.open("GET", request.url, true);
