@@ -2,11 +2,8 @@
 
 immediate
 -------
-5. result 如何 rank?
-	a. extract keyword freq table.
-	b. get rid of uninteresting keywords.
-	c. each keyword receives a score based on top-three words frequencies, 
-	d. rank sentence based on scores. 
+1. what other words should be considered other than keywords in user input query?
+2. bugfix: use array instead of object
 
 current sprint log
 -------
@@ -42,4 +39,5 @@ done deal
 11. bugFix: sometimes when first opened up it freezes the window <- suspect due to while loop.
 12. code要更模块化: modularize UI creation effort. 
 13. bugFix: now doesn't handle special chars. 
+14. priliminary sentence ranking based on keywords extracted from user input query.
 
