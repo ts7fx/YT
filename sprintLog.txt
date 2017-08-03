@@ -1,17 +1,18 @@
 @ts7fx
 
-today
+immediate
 -------
+3. 对搜索单位的确立进一步挖掘
+	key points:
+	a. sub file doesn't contain 标点符号
+5. result 如何 rank?
 
 
 current sprint log
 -------
 1. cleanup code
 2. 加入storyboard
-3. 对搜索单位的确立进一步挖掘
-5. result 如何 rank?
 leads to: 1. smart suggestion to help user to start using this extension by adding three boxes on top of searchbox containing top words in the subtitle
-6. bugFix: now doesn't handle special chars. 
 
 sprint backlog (排名不分先后)
 -------
@@ -20,6 +21,8 @@ sprint backlog (排名不分先后)
 3. what about 用户数据收集？
 4. Request class, for server side\
 5. to stylize code with airbnb js style guide.
+6. current firing condition will not run if there's ad. 
+	a. on first time time is updated??
 
 done deal
 -------
@@ -35,3 +38,5 @@ done deal
 10. bugFix: when extension is first loaded, it is not fired up. 
 11. bugFix: sometimes when first opened up it freezes the window <- suspect due to while loop.
 12. code要更模块化: modularize UI creation effort. 
+13. bugFix: now doesn't handle special chars. 
+

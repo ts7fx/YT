@@ -4,13 +4,24 @@ class subtitle {
     this.content = this.cleanContent(content);
     this.subURL = subURL;
   }
+  /** helpfer function to handle special characters*/
+  static escape(t) {
+    return t
+    .replace(/&amp;/g, '\&')
+    .replace(/&lt;/g, '\<')
+    .replace(/&gt;/g, '\>')
+    .replace(/&quot;/g, '\"')
+    .replace(/&#39;/g, "\'");
+  }
   /** clean content, return object in key-value pairs (timeStamp: sentence) */
   cleanContent(responseText){
     // return cleaned content
     var cleanText = {};
     var regExp = /(<p\b[^>]*>([\s\S]*?)<\/p>)/g; // regex for extracting <p> elements
     var captureGroups = responseText.match(regExp); // this is a list of <p> elements in raw formats
-    for (var i in captureGroups) { 
+    for (const i in captureGroups) { 
+      if(captureGroups[i].replace(/<[^>]*>/g, '')==='\n')
+        continue;
       // format timeStamp information
       var timeStamp = captureGroups[i].match(/t="(\d*?)"/)[1];
       if (timeStamp.length < 4){ // handles single digit timestamps
@@ -19,14 +30,14 @@ class subtitle {
       }
       timeStamp = +timeStamp;
       timeStamp /= 1000;
-      cleanText[timeStamp] = captureGroups[i].replace(/<[^>]*>/g, ''); // clean sentence and store as (time:sentence)
+      cleanText[timeStamp] = subtitle.escape(captureGroups[i].replace(/<[^>]*>/g, '')); // clean sentence and store as (time:sentence)
     } 
     return cleanText;
   }
   /** search for query in this.content, returns an array of li objects */
   search(query){
     var result = [];
-    var queries = query.split(' ');
+    var queries = subtitle.escape(query).split(' ');
     var maxRating = 0;
     for (var time in this.content){
       var curr = this.content[time];
@@ -83,23 +94,21 @@ class subtitle {
   }
 }
 function addMotherBoard(t,l,callback){
-    const m = document.createElement('div'),
-          container = document.getElementById('watch-header');
-    m.id = 'mother-board';
-    container.insertBefore(m, container.childNodes[0]);
-    // callback();
-    
-    if (callback) {
+  const m = document.createElement('div'),
+  container = document.getElementById('watch-header');
+  m.id = 'mother-board';
+  container.insertBefore(m, container.childNodes[0]);    
+  if (callback) {
     callback(t,l);
-}
   }
+}
 class controlPanel{
   /** set of static methods to help initializing UI */
   constructor() {
   }
   static addMotherBoard(c,f1,f2){
     const m = document.createElement('div'),
-          container = document.getElementById('watch-header');
+    container = document.getElementById('watch-header');
     m.id = 'mother-board';
     container.insertBefore(m, container.childNodes[0]);
     if (f1) {
@@ -109,7 +118,7 @@ class controlPanel{
   }
   static addSearchBox(c){
     const sb = document.createElement('input'),
-          r = document.createElement("ul");
+    r = document.createElement("ul");
     sb.id = 'search-box';
     r.id = 'my-results';
     sb.setAttribute('placeholder', 'Search Subtitle');
@@ -145,9 +154,9 @@ chrome.runtime.onMessage.addListener(
     if (request.message == 'flick button'){
       setTimeout(function(){
         $( document ).ready(function() {
-        document.getElementsByClassName('ytp-subtitles-button')[0].click();
+          document.getElementsByClassName('ytp-subtitles-button')[0].click();
         });
-      }, 1001); // room for optimization
+      }, 1001); // room for optimization. How to handle ads b4 vid?
     }
     else if (request.message == 'flick button twice'){
       document.getElementsByClassName('ytp-subtitles-button')[0].click();
