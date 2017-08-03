@@ -34,41 +34,62 @@ class subtitle {
     } 
     return cleanText;
   }
-  /** search for query in this.content, returns an array of li objects */
-  search(query){
-    var result = [];
-    var queries = subtitle.escape(query).split(' ');
-    var maxRating = 0;
-    for (var time in this.content){
-      var curr = this.content[time];
-      var rating = 0; 
-      for (var i in queries){
-        var qLowCase = query.toLowerCase();
-        if (curr.toLowerCase().indexOf(qLowCase)!=-1)
-          rating++;
-      }
-
-      if (rating > 0){
-        rating-=(time/10000);
-        var beg = curr.toLowerCase().indexOf(qLowCase);
-        var ori = curr.substr(beg, qLowCase.length);
-        if (maxRating < rating){
-          result.unshift(this.handleResult(ori, time, curr));
-          maxRating = rating;
-        }
-        else {
-          result.push(this.handleResult(ori, time, curr));
+  /** keyword search for one or more keyword match in user query 
+   *  @param {String} query - user input
+   *  @return {Object} this.rank(query, result) - calls ranking function to re-rank results. 
+   */
+   search(query){
+    const result = {};
+    const queries = subtitle.escape(query).split(' ');
+    for (const time in this.content){
+      const curr = this.content[time];
+      let present = false;
+      for (const w in queries){
+        if (curr.toLowerCase().indexOf(queries[w].toLowerCase()) != -1){ // if curr contains any words in user query
+          present = true;
         }
       }
+      if (present == true)
+        result[time] = curr;
     }
-    return result; 
+    return this.rank(query, result);
   }
-  /** temp helper func */
-  str_pad_left(string,pad,length){
-    return (new Array(length+1).join(pad)+string).slice(-length);
+  /** rank result based on user input and ranking function
+   *  @param {String} query - user input
+   *  @param {Object} result - matched result, in {time:sentence}
+   *  @return {Object} this.handle(query, result) - calls handle function to format into <li> items. 
+   */
+   rank(query, result){
+    const queries = subtitle.escape(query).split(' ').filter(Boolean);
+    const n = queries.length + 1; // always consider one more word. 
+    let score = function(query, result){
+      const queries = subtitle.escape(query).split(' ').filter(Boolean);
+      const n = queries.length + 1;
+      const scoreBoard = [];
+      for (let i in result){
+        let s = 0;
+        for (let j in queries){
+          if (result[i].toLowerCase().indexOf(queries[j].toLowerCase()) != -1)
+            s += 10;
+        }
+        scoreBoard.push([s, i, result[i]]);
+      }
+      scoreBoard.sort(function(a, b) {
+        if (a[0] != b[0])
+          return b[0] - a[0];
+        else
+          return a[1] - b[1];
+      });
+      return scoreBoard;
+    }
+    return this.handle(query, score(query, result));
   }
-  /** format and return search result */
-  handleResult(query, timeStamp, sentence){
+  /** format and return search result
+   *  @param {String} query - user input
+   *  @param {Array} result - matched result, each element is in [score, timeStamp, sentence] format.
+   *  @return {Array} html - array of <li> items. 
+   */
+   handle(query, result){
     // temp helper functions
     String.prototype.replaceAll = function(strReplace, strWith) {
       // See http://stackoverflow.com/a/3561711/556609
@@ -76,19 +97,30 @@ class subtitle {
       var reg = new RegExp(esc, 'ig');
       return this.replace(reg, strWith);
     };
-    var li = document.createElement("li"),
-    minutes = Math.floor(timeStamp / 60),
-    seconds = parseInt(timeStamp % 60),
-    finalTime = this.str_pad_left(minutes,'0',2)+':'+this.str_pad_left(seconds,'0',2);
-    li.className = "match-item";
-    sentence = sentence.replaceAll(query,"<b style='color:#e74c3c'>"+query+"</b>"); // find query in sentence, highlight it
-    li.innerHTML = finalTime + ' ' + sentence;
-    li.addEventListener("click", function(){ // add event listener for click
-      document.getElementsByTagName("video")[0].currentTime = Number(timeStamp);
-      document.getElementsByTagName("video")[0].oncanplay = function(){};
-    });
-    return li;
+    let str_pad_left = function(string,pad,length){
+      return (new Array(length+1).join(pad)+string).slice(-length);
+    }
+    const html = [];
+    for (let i in result){
+      const timeStamp = result[i][1],
+      queries = subtitle.escape(query).split(' ').filter(Boolean),
+      li = document.createElement("li"),
+      minutes = Math.floor(timeStamp / 60),
+      seconds = parseInt(timeStamp % 60),
+      finalTime = str_pad_left(minutes,'0',2) + ':' + str_pad_left(seconds,'0',2);
+      let sentence = result[i][2];
+      for (let j in queries)
+        sentence = sentence.replaceAll(queries[j],"<b style='color:#e74c3c'>"+queries[j]+"</b>");
+      li.className = "match-item";
+      li.innerHTML = finalTime + ' ' + sentence;
+      li.addEventListener("click", function(){ // add event listener for click
+        document.getElementsByTagName("video")[0].currentTime = Number(timeStamp);
+      });
+      html.push(li);
+    }
+    return html;
   }     
+  /** simple get function*/
   getSubURL(){
     return this.subURL;
   }
