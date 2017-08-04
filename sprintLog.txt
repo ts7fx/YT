@@ -4,6 +4,7 @@ immediate
 -------
 1. what other words should be considered other than keywords in user input query?
 2. bugfix: use array instead of object
+3. promotional tile images & screenshots for extension listing.
 
 current sprint log
 -------
