@@ -93,8 +93,8 @@ class subtitle {
     // temp helper functions
     String.prototype.replaceAll = function(strReplace, strWith) {
       // See http://stackoverflow.com/a/3561711/556609
-      var esc = strReplace.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-      var reg = new RegExp(esc, 'ig');
+      const esc = strReplace.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      let reg = new RegExp(esc, 'ig');
       return this.replace(reg, strWith);
     };
     let str_pad_left = function(string,pad,length){
@@ -194,7 +194,7 @@ chrome.runtime.onMessage.addListener(
       document.getElementsByClassName('ytp-subtitles-button')[0].click();
     }
     else{
-      var crawler = new XMLHttpRequest();
+      let crawler = new XMLHttpRequest();
       crawler.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
           const c = new subtitle(crawler.responseText, request.url);
