@@ -36,7 +36,7 @@ class subtitle {
   }
   /** keyword search for one or more keyword match in user query 
    *  @param {String} query - user input
-   *  @return {Object} this.rank(query, result) - calls ranking function to re-rank results. 
+   *  @return {Array} this.rank(query, result) - calls ranking function to re-rank results. 
    */
    search(query){
     const result = [];
@@ -56,8 +56,8 @@ class subtitle {
   }
   /** rank result based on user input and ranking function
    *  @param {String} query - user input
-   *  @param {Object} result - matched result, in {time:sentence}
-   *  @return {Object} this.handle(query, result) - calls handle function to format into <li> items. 
+   *  @param {ArrayList} result - matched result, in [time,sentence]
+   *  @return {Array} this.handle(query, result) - calls handle function to format into <li> items. 
    */
    rank(query, result){
     const queries = subtitle.escape(query).split(' ').filter(Boolean);
@@ -120,10 +120,6 @@ class subtitle {
     }
     return html;
   }     
-  /** simple get function*/
-  getSubURL(){
-    return this.subURL;
-  }
 }
 function addMotherBoard(t,l,callback){
   const m = document.createElement('div'),

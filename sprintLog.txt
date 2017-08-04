@@ -3,15 +3,13 @@
 immediate
 -------
 1. what other words should be considered other than keywords in user input query?
-2. bugfix: use array instead of object
-3. promotional tile images & screenshots for extension listing.
+2. cleanup code
 
 current sprint log
 -------
-1. cleanup code
-2. 加入storyboard
+1. 加入storyboard
 leads to: 1. smart suggestion to help user to start using this extension by adding three boxes on top of searchbox containing top words in the subtitle
-3. 对搜索单位的确立进一步挖掘
+2. 对搜索单位的确立进一步挖掘
 	key points:
 	a. sub file doesn't contain 标点符号
 
@@ -24,6 +22,8 @@ sprint backlog (排名不分先后)
 5. to stylize code with airbnb js style guide.
 6. current firing condition will not run if there's ad. 
 	a. on first time time is updated??
+7. keep on improving listing.
+8. 弹幕.
 
 done deal
 -------
@@ -41,4 +41,7 @@ done deal
 12. code要更模块化: modularize UI creation effort. 
 13. bugFix: now doesn't handle special chars. 
 14. priliminary sentence ranking based on keywords extracted from user input query.
+15. bugfix: use array instead of object
+16. promotional tile images & screenshots for extension listing.
+
 
