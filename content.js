@@ -16,21 +16,21 @@ class subtitle {
   /** clean content, return object in key-value pairs (timeStamp: sentence) */
   cleanContent(responseText){
     // return cleaned content
-    var cleanText = {};
-    var regExp = /(<p\b[^>]*>([\s\S]*?)<\/p>)/g; // regex for extracting <p> elements
-    var captureGroups = responseText.match(regExp); // this is a list of <p> elements in raw formats
+    const cleanText = [];
+    const regExp = /(<p\b[^>]*>([\s\S]*?)<\/p>)/g; // regex for extracting <p> elements
+    const captureGroups = responseText.match(regExp); // this is a list of <p> elements in raw formats
     for (const i in captureGroups) { 
       if(captureGroups[i].replace(/<[^>]*>/g, '')==='\n')
         continue;
       // format timeStamp information
-      var timeStamp = captureGroups[i].match(/t="(\d*?)"/)[1];
+      let timeStamp = captureGroups[i].match(/t="(\d*?)"/)[1];
       if (timeStamp.length < 4){ // handles single digit timestamps
         timeStamp += '00';
         timeStamp = +timeStamp;
       }
       timeStamp = +timeStamp;
       timeStamp /= 1000;
-      cleanText[timeStamp] = subtitle.escape(captureGroups[i].replace(/<[^>]*>/g, '')); // clean sentence and store as (time:sentence)
+      cleanText.push([timeStamp, subtitle.escape(captureGroups[i].replace(/<[^>]*>/g, ''))]);
     } 
     return cleanText;
   }
@@ -39,10 +39,10 @@ class subtitle {
    *  @return {Object} this.rank(query, result) - calls ranking function to re-rank results. 
    */
    search(query){
-    const result = {};
+    const result = [];
     const queries = subtitle.escape(query).split(' ');
-    for (const time in this.content){
-      const curr = this.content[time];
+    for (const i in this.content){
+      const curr = this.content[i][1];
       let present = false;
       for (const w in queries){
         if (curr.toLowerCase().indexOf(queries[w].toLowerCase()) != -1){ // if curr contains any words in user query
@@ -50,7 +50,7 @@ class subtitle {
         }
       }
       if (present == true)
-        result[time] = curr;
+        result.push([this.content[i][0],this.content[i][1]]);
     }
     return this.rank(query, result);
   }
@@ -69,10 +69,10 @@ class subtitle {
       for (let i in result){
         let s = 0;
         for (let j in queries){
-          if (result[i].toLowerCase().indexOf(queries[j].toLowerCase()) != -1)
+          if (result[i][1].toLowerCase().indexOf(queries[j].toLowerCase()) != -1)
             s += 10;
         }
-        scoreBoard.push([s, i, result[i]]);
+        scoreBoard.push([s, result[i][0], result[i][1]]);
       }
       scoreBoard.sort(function(a, b) {
         if (a[0] != b[0])
