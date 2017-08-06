@@ -3,12 +3,13 @@
 immediate
 -------
 1. what other words should be considered other than keywords in user input query?
-2. cleanup code
+2. 加入storyboard
+	a. get storyboard file. 
+3. smart suggestion to help user to start using this extension by adding three boxes on top of searchbox containing top words in the subtitle
 
 current sprint log
 -------
-1. 加入storyboard
-leads to: 1. smart suggestion to help user to start using this extension by adding three boxes on top of searchbox containing top words in the subtitle
+
 2. 对搜索单位的确立进一步挖掘
 	key points:
 	a. sub file doesn't contain 标点符号
@@ -43,5 +44,7 @@ done deal
 14. priliminary sentence ranking based on keywords extracted from user input query.
 15. bugfix: use array instead of object
 16. promotional tile images & screenshots for extension listing.
+17. cleanup code
+
 
 
