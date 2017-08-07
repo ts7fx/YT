@@ -3,6 +3,7 @@
 immediate
 -------
 1. what other words should be considered other than keywords in user input query?
+ 	a. build a crawler to download some data.
 2. 加入storyboard
 	a. get storyboard file. 
 3. smart suggestion to help user to start using this extension by adding three boxes on top of searchbox containing top words in the subtitle
