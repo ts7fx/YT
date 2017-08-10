@@ -7,16 +7,16 @@ chrome.webRequest.onCompleted.addListener(function monitor(request){
 		var queryInfo = {
 			active: true,
 			currentWindow: true,
-			url: 'https://*.youtube.com/*' + video_id + '*' 
+			url: 'https://*.youtube.com/*' + video_id + '*'
 		};
 		chrome.tabs.query(queryInfo, function(tabs){
-			var tabId = tabs[0].id; 
+			var tabId = tabs[0].id;
 			chrome.tabs.sendMessage(tabId, {url:request.url, id:request.url.match(/v=(.+?)&/)[1]}, function(response){ 
 				if (response.message == 'subtitle loaded'){
 					console.log('subtitle is loaded');
 					chrome.tabs.sendMessage(tabId, {message:'flick button twice'});
 				}
-			}); 
+			});
 		});
 	}
 },{
@@ -29,7 +29,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 		    if(tab.url == currentTab.url && changeInfo.status == 'complete'){
 		    	if (tab.url.match(/youtube/g) != null && tab.url.match(/v=/g) != null ){
 		    		console.log('sending flick button request');
-		    		chrome.tabs.sendMessage(tabId, {message:'flick button'},function(response){}); 
+		    		chrome.tabs.sendMessage(tabId, {message:'flick button'},function(response){});
 		    	}
 		    }
 		});

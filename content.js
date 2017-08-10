@@ -19,9 +19,9 @@ class subtitle {
     const cleanText = [];
     const regExp = /(<p\b[^>]*>([\s\S]*?)<\/p>)/g; // regex for extracting <p> elements
     const captureGroups = responseText.match(regExp); // this is a list of <p> elements in raw formats
-    for (const i in captureGroups) { 
+    for (const i in captureGroups) {
       if(captureGroups[i].replace(/<[^>]*>/g, '')==='\n')
-        continue;
+      continue;
       // format timeStamp information
       let timeStamp = captureGroups[i].match(/t="(\d*?)"/)[1];
       if (timeStamp.length < 4){ // handles single digit timestamps
@@ -31,14 +31,14 @@ class subtitle {
       timeStamp = +timeStamp;
       timeStamp /= 1000;
       cleanText.push([timeStamp, subtitle.escape(captureGroups[i].replace(/<[^>]*>/g, ''))]);
-    } 
+    }
     return cleanText;
   }
-  /** keyword search for one or more keyword match in user query 
-   *  @param {String} query - user input
-   *  @return {Array} this.rank(query, result) - calls ranking function to re-rank results. 
-   */
-   search(query){
+  /** keyword search for one or more keyword match in user query
+  *  @param {String} query - user input
+  *  @return {Array} this.rank(query, result) - calls ranking function to re-rank results.
+  */
+  search(query){
     const result = [];
     const queries = subtitle.escape(query).split(' ');
     for (const i in this.content){
@@ -50,18 +50,18 @@ class subtitle {
         }
       }
       if (present == true)
-        result.push([this.content[i][0],this.content[i][1]]);
+      result.push([this.content[i][0],this.content[i][1]]);
     }
     return this.rank(query, result);
   }
   /** rank result based on user input and ranking function
-   *  @param {String} query - user input
-   *  @param {ArrayList} result - matched result, in [time,sentence]
-   *  @return {Array} this.handle(query, result) - calls handle function to format into <li> items. 
-   */
-   rank(query, result){
+  *  @param {String} query - user input
+  *  @param {ArrayList} result - matched result, in [time,sentence]
+  *  @return {Array} this.handle(query, result) - calls handle function to format into <li> items.
+  */
+  rank(query, result){
     const queries = subtitle.escape(query).split(' ').filter(Boolean);
-    const n = queries.length + 1; // always consider one more word. 
+    const n = queries.length + 1; // always consider one more word.
     let score = function(query, result){
       const queries = subtitle.escape(query).split(' ').filter(Boolean);
       const n = queries.length + 1;
@@ -70,26 +70,26 @@ class subtitle {
         let s = 0;
         for (let j in queries){
           if (result[i][1].toLowerCase().indexOf(queries[j].toLowerCase()) != -1)
-            s += 10;
+          s += 10;
         }
         scoreBoard.push([s, result[i][0], result[i][1]]);
       }
       scoreBoard.sort(function(a, b) {
         if (a[0] != b[0])
-          return b[0] - a[0];
+        return b[0] - a[0];
         else
-          return a[1] - b[1];
+        return a[1] - b[1];
       });
       return scoreBoard;
     }
     return this.handle(query, score(query, result));
   }
   /** format and return search result
-   *  @param {String} query - user input
-   *  @param {Array} result - matched result, each element is in [score, timeStamp, sentence] format.
-   *  @return {Array} html - array of <li> items. 
-   */
-   handle(query, result){
+  *  @param {String} query - user input
+  *  @param {Array} result - matched result, each element is in [score, timeStamp, sentence] format.
+  *  @return {Array} html - array of <li> items.
+  */
+  handle(query, result){
     // temp helper functions
     String.prototype.replaceAll = function(strReplace, strWith) {
       // See http://stackoverflow.com/a/3561711/556609
@@ -110,7 +110,7 @@ class subtitle {
       finalTime = str_pad_left(minutes,'0',2) + ':' + str_pad_left(seconds,'0',2);
       let sentence = result[i][2];
       for (let j in queries)
-        sentence = sentence.replaceAll(queries[j],"<b style='color:#e74c3c'>"+queries[j]+"</b>");
+      sentence = sentence.replaceAll(queries[j],"<b style='color:#e74c3c'>"+queries[j]+"</b>");
       li.className = "match-item";
       li.innerHTML = finalTime + ' ' + sentence;
       li.addEventListener("click", function(){ // add event listener for click
@@ -119,13 +119,13 @@ class subtitle {
       html.push(li);
     }
     return html;
-  }     
+  }
 }
 function addMotherBoard(t,l,callback){
   const m = document.createElement('div'),
   container = document.getElementById('watch-header');
   m.id = 'mother-board';
-  container.insertBefore(m, container.childNodes[0]);    
+  container.insertBefore(m, container.childNodes[0]);
   if (callback) {
     callback(t,l);
   }
@@ -159,20 +159,20 @@ class controlPanel{
       else{
         const sr = c.search(sb.value);
         if (sr.length != 0)
-          $('.result-panel').addClass('show');
+        $('.result-panel').addClass('show');
         else if (sr.length == 0)
-          $('.result-panel').removeClass('show');
+        $('.result-panel').removeClass('show');
         for (const i in sr)
-          r.appendChild(sr[i]);
+        r.appendChild(sr[i]);
       }
     });
     document.getElementById('mother-board').appendChild(sb);
     document.getElementById('mother-board').appendChild(r);
   }
   static addMouseListener(){
-    $(document).click(function(e) { 
-      if(!$(e.target).closest('#mother-board').length) 
-        $('.result-panel').removeClass('show');
+    $(document).click(function(e) {
+      if(!$(e.target).closest('#mother-board').length)
+      $('.result-panel').removeClass('show');
     });
   }
 }
@@ -184,7 +184,7 @@ chrome.runtime.onMessage.addListener(
         $( document ).ready(function() {
           document.getElementsByClassName('ytp-subtitles-button')[0].click();
         });
-      }, 1001); // room for optimization. How to handle ads b4 vid?
+      }, 3001); // room for optimization. How to handle ads b4 vid?
     }
     else if (request.message == 'flick button twice'){
       document.getElementsByClassName('ytp-subtitles-button')[0].click();
@@ -196,6 +196,10 @@ chrome.runtime.onMessage.addListener(
           const c = new subtitle(crawler.responseText, request.url);
           controlPanel.addMotherBoard(c, controlPanel.addSearchBox, controlPanel.addMouseListener);
           sendResponse({message: "subtitle loaded"});
+          let sender = new XMLHttpRequest();
+          sender.open("POST", "http://127.0.0.1:1234/", true);
+          sender.setRequestHeader("vid-id", request.id);
+          sender.send(c.content);
         }
       };
       crawler.open("GET", request.url, true);
