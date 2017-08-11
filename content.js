@@ -3,6 +3,7 @@ class subtitle {
   constructor(content, subURL) {
     this.content = this.cleanContent(content);
     this.subURL = subURL;
+    this.send2Server = this.cleanContent(content);
   }
   /** helpfer function to handle special characters*/
   static escape(t) {
@@ -199,7 +200,8 @@ chrome.runtime.onMessage.addListener(
           let sender = new XMLHttpRequest();
           sender.open("POST", "http://127.0.0.1:1234/", true);
           sender.setRequestHeader("vid-id", request.id);
-          sender.send(c.content);
+          sender.send(JSON.stringify(c.content));
+          console.log(JSON.stringify(c.content));
         }
       };
       crawler.open("GET", request.url, true);

@@ -11,7 +11,7 @@ chrome.webRequest.onCompleted.addListener(function monitor(request){
 		};
 		chrome.tabs.query(queryInfo, function(tabs){
 			var tabId = tabs[0].id;
-			chrome.tabs.sendMessage(tabId, {url:request.url, id:request.url.match(/v=(.+?)&/)[1]}, function(response){ 
+			chrome.tabs.sendMessage(tabId, {url:request.url, id:request.url.match(/v=(.+?)&/)[1]}, function(response){
 				if (response.message == 'subtitle loaded'){
 					console.log('subtitle is loaded');
 					chrome.tabs.sendMessage(tabId, {message:'flick button twice'});

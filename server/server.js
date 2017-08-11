@@ -12,7 +12,7 @@ http.createServer(function(req,res){
     });
     req.on('end', function() {
       //var formData = qs.parse(requestBody);
-      fs.appendFile(req.headers['vid-id'], requestBody, function(err){
+      fs.appendFile('/Users/ChineseSamurai/desktop/subs/'+req.headers['vid-id'], requestBody, function(err){
         if (err) {
           console.log('unable to write to file');
         }
@@ -26,3 +26,4 @@ http.createServer(function(req,res){
     console.log('other request received');
   }
 }).listen(serverPort);
+console.log('Server launched. Listening on port ' + serverPort);
