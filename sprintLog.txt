@@ -1,18 +1,23 @@
 @ts7fx
 immediate
 -------
+today publish.
+1. bugfix: now doesn't run when there's ads.
+2. draft readme.
+
+current sprint log
+-------
 1. what other words should be considered other than keywords in user input query?
  	a. build a crawler to download some data.
 2. 加入storyboard
 	a. get storyboard file.
 3. smart suggestion to help user to start using this extension by adding three boxes on top of searchbox containing top words in the subtitle
-
-current sprint log
--------
 2. 对搜索单位的确立进一步挖掘
 	key points:
 	a. sub file doesn't contain 标点符号
-3. Request class, for server side\
+3. Request class, for server side
+4. onClick event optimization
+5. functions pass HTML object to each other
 
 sprint backlog (排名不分先后)
 -------
@@ -44,3 +49,4 @@ done deal
 15. bugfix: use array instead of object
 16. promotional tile images & screenshots for extension listing.
 17. cleanup code
+18. update HTML for button
