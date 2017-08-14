@@ -13,10 +13,18 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message == 'reset'){
       myVar = setInterval(function(){
-        document.getElementsByClassName('ytp-subtitles-button')[0].click();
-        setTimeout(function(){
+        if (document.getElementsByClassName('ytp-subtitles-button')[0].clientHeight != 0){
           document.getElementsByClassName('ytp-subtitles-button')[0].click();
-        }, 100);
+          console.log('button clicked once');
+          setTimeout(function(){
+            document.getElementsByClassName('ytp-subtitles-button')[0].click();
+            console.log('button clicked twice');
+          }, 500);
+        }
+        else{
+          console.log('no subtitle');
+          clearInterval(myVar);
+        }
       }, 1000);
     }
     else if (request.message == 'subURL'){
