@@ -1,9 +1,16 @@
 @ts7fx
+test cases
+-------
+1. Youtube.com -> a video w/ subtitle -- will terminate
+2. Youtube.com -> a video w/o subtitle -- will terminate
+3. Copy & paster a video url with subtitle -- will terminate
+4. Copy & paster a video url w/o subtitle -- will terminate
+
 immediate
 -------
-today publish.
-1. bugfix: now doesn't run when there's ads.
 2. draft readme.
+3. publish.
+4. further OO code
 
 current sprint log
 -------
@@ -50,3 +57,4 @@ done deal
 16. promotional tile images & screenshots for extension listing.
 17. cleanup code
 18. update HTML for button
+19. bugfix: now doesn't run when there's ads.
