@@ -5,10 +5,10 @@ test cases
 2. Youtube.com -> a video w/o subtitle -- will terminate
 3. Copy & paster a video url with subtitle -- will terminate
 4. Copy & paster a video url w/o subtitle -- will terminate
+5. Ad has no sub, but video has. -- will not run correctly
 
 immediate
 -------
-2. draft readme.
 3. publish.
 4. further OO code
 
@@ -58,3 +58,4 @@ done deal
 17. cleanup code
 18. update HTML for button
 19. bugfix: now doesn't run when there's ads.
+20. draft readme.
