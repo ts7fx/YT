@@ -23,6 +23,7 @@ class subtitle {
     for (const i in captureGroups) {
       if(captureGroups[i].replace(/<[^>]*>/g, '')==='\n')
       continue;
+      
       // format timeStamp information
       let timeStamp = captureGroups[i].match(/t="(\d*?)"/)[1];
       if (timeStamp.length < 4){ // handles single digit timestamps
