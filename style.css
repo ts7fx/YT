@@ -37,8 +37,8 @@ li.match-item:hover {
     font-size: 100%;
     position:absolute;
     width:347px;
-    top:-80px;
-    max-height: 75px;
+    top:-155px;
+    max-height: 150px;
     min-height: 15px;
     background-color: #fff;
     overflow-y: scroll;
