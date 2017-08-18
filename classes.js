@@ -14,114 +14,69 @@ class subtitle {
     .replace(/&quot;/g, '\"')
     .replace(/&#39;/g, "\'");
   }
-  /** clean content, return object in key-value pairs (timeStamp: sentence) */
+  /** takes in HTML text, return HTML object*/
   cleanContent(responseText){
-    // return cleaned content
-    const cleanText = [];
-    const regExp = /(<p\b[^>]*>([\s\S]*?)<\/p>)/g; // regex for extracting <p> elements
-    const captureGroups = responseText.match(regExp); // this is a list of <p> elements in raw formats
-    for (const i in captureGroups) {
-      if(captureGroups[i].replace(/<[^>]*>/g, '')==='\n')
-      continue;
-      
-      // format timeStamp information
-      let timeStamp = captureGroups[i].match(/t="(\d*?)"/)[1];
-      if (timeStamp.length < 4){ // handles single digit timestamps
-        timeStamp += '00';
-        timeStamp = +timeStamp;
+    var obj = document.createElement('div'),
+        results = document.createElement('div');
+    obj.innerHTML=responseText;
+    var sentences = obj.querySelectorAll('p');
+    for (let i = 0; i < sentences.length; i++){
+      if (sentences[i].textContent == '\n'){
+        continue;
       }
-      timeStamp = +timeStamp;
-      timeStamp /= 1000;
-      cleanText.push([timeStamp, subtitle.escape(captureGroups[i].replace(/<[^>]*>/g, ''))]);
+      else{
+        var individualSentence = document.createElement('p');
+        individualSentence.innerHTML = sentences[i].textContent;
+        var timestamp = sentences[i].getAttribute('t');
+        individualSentence.setAttribute('timestamp', timestamp);
+        results.append(individualSentence);
+      }
     }
-    return cleanText;
+    return results;
   }
-  /** keyword search for one or more keyword match in user query
-  *  @param {String} query - user input
-  *  @return {Array} this.rank(query, result) - calls ranking function to re-rank results.
-  */
+  /** performs user search on HTMl object. */
   search(query){
-    const result = [];
-    const queries = subtitle.escape(query).split(' ');
-    for (const i in this.content){
-      const curr = this.content[i][1];
-      let present = false;
-      for (const w in queries){
-        if (curr.toLowerCase().indexOf(queries[w].toLowerCase()) != -1 && w != ' '){ // if curr contains any words in user query
-          present = true;
-        }
-      }
-      if (present == true)
-      result.push([this.content[i][0],this.content[i][1]]);
-    }
-    return this.rank(query, result);
-  }
-  /** rank result based on user input and ranking function
-  *  @param {String} query - user input
-  *  @param {ArrayList} result - matched result, in [time,sentence]
-  *  @return {Array} this.handle(query, result) - calls handle function to format into <li> items.
-  */
-  rank(query, result){
+    const queryIsHit = function(query, line){
+            return (line.innerHTML.indexOf(query)>-1);
+          },
+          handle = function(query, line){
+            var result=line.innerHTML;
+            var copy =  line.cloneNode();
+            for (let i of query){
+              result=result.split(i).join("|"+i+"^");
+            }
+            result = result.split('|').join("<b style='color:#e74c3c'>");
+            result = result.split('^').join("</b>");
+            copy.innerHTML=result;
+            var timestamp=document.createElement('span');
+            var time=parseFloat(copy.getAttribute('timestamp'))/1000;
+            var h = Math.floor(time/3600); //Get whole hours
+            time -= h*3600;
+            var m = Math.floor(time/60);
+            time-= m*60;
+            time=Math.floor(time);
+            timestamp.innerHTML=h+":"+(m < 10 ? '0'+m : m)+":"+(time < 10 ? '0'+time : time)+" ";
+            copy.prepend(timestamp);
+            return copy;
+          },
+          rank = function(results){ return results; };
     const queries = subtitle.escape(query).split(' ').filter(Boolean);
-    const n = queries.length + 1; // always consider one more word.
-    let score = function(query, result){
-      const queries = subtitle.escape(query).split(' ').filter(Boolean);
-      const n = queries.length + 1;
-      const scoreBoard = [];
-      for (let i in result){
-        let s = 0;
-        for (let j in queries){
-          if (result[i][1].toLowerCase().indexOf(queries[j].toLowerCase()) != -1)
-          s += 10;
-        }
-        scoreBoard.push([s, result[i][0], result[i][1]]);
+    var regFromQuery = new RegExp(queries.join("|"), 'gi');
+    var results = document.createElement('div');
+    var subtitles = this.content.querySelectorAll('p');
+    //var now = Date.now();
+    for (let i = 0; i < subtitles.length; i++){
+      var hit = subtitles[i].innerHTML.match(regFromQuery);
+      if (hit == null){
+        continue;
       }
-      scoreBoard.sort(function(a, b) {
-        if (a[0] != b[0])
-        return b[0] - a[0];
-        else
-        return a[1] - b[1];
-      });
-      return scoreBoard;
+      else{
+        var element = handle(Array.from(new Set(hit)), subtitles[i]);
+        results.append(element);
+      }
     }
-    return this.handle(query, score(query, result));
-  }
-  /** format and return search result
-  *  @param {String} query - user input
-  *  @param {Array} result - matched result, each element is in [score, timeStamp, sentence] format.
-  *  @return {Array} html - array of <li> items.
-  */
-  handle(query, result){
-    // temp helper functions
-    String.prototype.replaceAll = function(strReplace, strWith) {
-      // See http://stackoverflow.com/a/3561711/556609
-      const esc = strReplace.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-      let reg = new RegExp(esc, 'ig');
-      return this.replace(reg, strWith);
-    };
-    let str_pad_left = function(string,pad,length){
-      return (new Array(length+1).join(pad)+string).slice(-length);
-    }
-    const html = [];
-    for (let i in result){
-      const timeStamp = result[i][1],
-      queries = subtitle.escape(query).split(' ').filter(Boolean),
-      li = document.createElement("li"),
-      minutes = Math.floor(timeStamp / 60),
-      seconds = parseInt(timeStamp % 60),
-      finalTime = str_pad_left(minutes,'0',2) + ':' + str_pad_left(seconds,'0',2);
-      //console.log(queries);
-      let sentence = result[i][2];
-      for (let j in queries)
-        sentence = sentence.replaceAll(queries[j],"<b style='color:#e74c3c'>"+queries[j]+"</b>");
-      li.className = "match-item";
-      li.innerHTML = finalTime + ' ' + sentence;
-      li.addEventListener("click", function(){ // add event listener for click
-        document.getElementsByTagName("video")[0].currentTime = Number(timeStamp);
-      });
-      html.push(li);
-    }
-    return html;
+    //console.log((Date.now()-now)/1000);
+    return rank(results);
   }
 }
 class controlPanel{
@@ -152,12 +107,12 @@ class controlPanel{
       }
       else{
         const sr = c.search(sb.value);
-        if (sr.length != 0)
-        $('.result-panel').addClass('show');
-        else if (sr.length == 0)
-        $('.result-panel').removeClass('show');
-        for (const i in sr)
-        r.appendChild(sr[i]);
+
+        if (sr.innerHTML !== '')
+          $('.result-panel').addClass('show');
+        else
+          $('.result-panel').removeClass('show');
+        r.appendChild(sr);
       }
     });
     document.getElementById('mother-board').appendChild(sb);
