@@ -26,26 +26,27 @@
     margin-top: 5px;
     padding: 2px 6px;
 }
-li.match-item { 
-    cursor: pointer; 
+li.match-item {
+    cursor: pointer;
 }
-li.match-item:hover { 
+li.match-item:hover {
     background-color: #e5e5e5;
 }
 .result-panel{
     display: none;
     font-size: 100%;
-    position:relative;
-    width:346px;
-    top:-5px;
+    position:absolute;
+    width:347px;
+    top:-80px;
     max-height: 75px;
     min-height: 15px;
     background-color: #fff;
-    overflow: scroll;
+    overflow-y: scroll;
     border: 1px grey;
-    border-style: none solid solid solid;
+    border-style: solid solid solid none;
     padding: 2px 6px;
+    z-index: 7;
 }
 .show{
-    display: block; 
+    display: block;
 }

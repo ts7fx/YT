@@ -7,6 +7,10 @@ test cases
 4. Copy & paster a video url w/o subtitle -- will terminate
 5. Ad has no sub, but video has. -- will not run correctly
 
+bugs
+-------
+1. user cannot use mouse to highlight texts inside of searchbox.
+
 immediate
 -------
 3. publish.
