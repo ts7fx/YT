@@ -107,7 +107,17 @@ class controlPanel{
       }
       else{
         const sr = c.search(sb.value);
-
+        sr.addEventListener('click', function hide(e){
+          //console.log(e);
+          if (e.target.attributes[0] != null && e.target.attributes[0].name == 'timestamp'){
+            const timeStamp = e.target.attributes[0].value;
+            document.getElementsByTagName("video")[0].currentTime = Number(timeStamp/1000);
+          }
+          else {
+            const timeStamp = e.target.parentNode.attributes[0].value;
+            document.getElementsByTagName("video")[0].currentTime = Number(timeStamp/1000);
+          }
+        });
         if (sr.innerHTML !== '')
           $('.result-panel').addClass('show');
         else
