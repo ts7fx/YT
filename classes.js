@@ -85,7 +85,7 @@ class controlPanel{
   }
   static addMotherBoard(c,f1,f2){
     const m = document.createElement('div'),
-    container = document.getElementById('watch-header');
+    container = document.getElementById('info');
     m.id = 'mother-board';
     container.insertBefore(m, container.childNodes[0]);
     if (f1) {
