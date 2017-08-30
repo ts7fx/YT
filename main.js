@@ -31,7 +31,6 @@ function clickButton(){
 }
 
 /** main: whenever a new request is received, new UI & subtitle object are created */
-var myVar;
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.message == 'subURL'){
