@@ -9,12 +9,11 @@ test cases
 
 bugs
 -------
-1. user cannot use mouse to highlight texts inside of searchbox.
 
 immediate
 -------
+
 3. publish.
-4. further OO code
 
 current sprint log
 -------
@@ -27,8 +26,6 @@ current sprint log
 	key points:
 	a. sub file doesn't contain 标点符号
 3. Request class, for server side
-4. onClick event optimization
-5. functions pass HTML object to each other
 
 sprint backlog (排名不分先后)
 -------
@@ -36,8 +33,6 @@ sprint backlog (排名不分先后)
 2. User environment and possible bugs
 3. what about 用户数据收集？
 5. to stylize code with airbnb js style guide.
-6. current firing condition will not run if there's ad.
-	a. on first time time is updated??
 7. keep on improving listing.
 8. 弹幕.
 
@@ -63,3 +58,9 @@ done deal
 18. update HTML for button
 19. bugfix: now doesn't run when there's ads.
 20. draft readme.
+21. bugFix: user cannot use mouse to highlight texts inside of searchbox.
+22. further OO code - functions pass HTML object to each other
+23. onClick event optimization
+24. bugFix: current firing condition will not run if there's ad. on first time time is updated??
+25. rework UI
+26. 
