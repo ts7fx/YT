@@ -12,7 +12,7 @@ var reactions={
 function checkList(){
   //console.log('counting');
   //list of conditions, change corresponding goSignal
-  if (document.querySelector('#my-results')==null &&
+  if (document.querySelector('#search-box')==null &&
       document.getElementsByClassName('ytp-subtitles-button')[0].clientHeight != 0 &&
       document.getElementsByClassName('ytp-subtitles-button')[0].getAttribute('aria-pressed') == 'false'){
     goSignal['clickButton']=true;
@@ -53,6 +53,7 @@ chrome.runtime.onMessage.addListener(
       return true;
     }
     else{
-      //console.log('error');
+      document.getElementById('search-box').remove();
+      console.log(request.message);
     }
   });
