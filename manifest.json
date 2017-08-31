@@ -1,12 +1,12 @@
 {
   "manifest_version": 2,
-  "name": "Keyword Search for Youtube™ Subtitles",
-  "short_name": "YTS",
-  "version": "1.1",
-  "description": "Another way to watch videos",
+  "name": "YouMerc",
+  "short_name": "YouMerc",
+  "version": "1.3",
+  "description": "Keyword Search for Youtube™ Subtitles, enables another way to watch videos",
   "browser_action": {
     "default_popup": "popup.html",
-    "default_title": "YTS"
+    "default_title": "YouMerc"
   },
   "icons": {
     "16": "icon/icon16.png",

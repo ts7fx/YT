@@ -12,20 +12,14 @@ bugs
 
 immediate
 -------
-
-3. publish.
+14. advertising.
+  a. name - YouMerc
+  b. software to videotape screen - windows Game recorder
+  c. use ppt to outline this shit - need scripts
+  d. then make into a video
 
 current sprint log
 -------
-1. what other words should be considered other than keywords in user input query?
- 	a. build a crawler to download some data.
-2. 加入storyboard
-	a. get storyboard file.
-3. smart suggestion to help user to start using this extension by adding three boxes on top of searchbox containing top words in the subtitle
-2. 对搜索单位的确立进一步挖掘
-	key points:
-	a. sub file doesn't contain 标点符号
-3. Request class, for server side
 
 sprint backlog (排名不分先后)
 -------
@@ -35,6 +29,15 @@ sprint backlog (排名不分先后)
 5. to stylize code with airbnb js style guide.
 7. keep on improving listing.
 8. 弹幕.
+9. what other words should be considered other than keywords in user input query?
+ 	a. build a crawler to download some data.
+10. 加入storyboard
+	a. get storyboard file.
+11. smart suggestion to help user to start using this extension by adding three boxes on top of searchbox containing top words in the subtitle
+12. 对搜索单位的确立进一步挖掘
+	key points:
+	a. sub file doesn't contain 标点符号
+13. Request class, for server side
 
 done deal
 -------
@@ -63,4 +66,4 @@ done deal
 23. onClick event optimization
 24. bugFix: current firing condition will not run if there's ad. on first time time is updated??
 25. rework UI
-26. 
+26. publish
