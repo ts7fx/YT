@@ -52,7 +52,7 @@ chrome.runtime.onMessage.addListener(
       return true;
     }
     else{
-      document.getElementById('search-box').remove();
+      document.getElementById('mother-board').remove();
       console.log(request.message);
     }
   });
